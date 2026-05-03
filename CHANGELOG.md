@@ -12,6 +12,25 @@ here. The package follows semver:
 Both consumers (`family-hub-app`, `anchorusapp-control`) bump together
 for any minor or major. Branching the design system is forbidden.
 
+## [1.0.2] -- 2026-05-03
+
+Patch release fixing one issue surfaced minutes after v1.0.1 published.
+
+### Fixed
+
+- `dist/components.css` -- `.modal-share-btn[hidden] { display: none }`.
+  Without this, the class-based `display: inline-flex` on
+  `.modal-share-btn` beat the UA-stylesheet `[hidden] { display: none }`
+  on specificity, so the share button rendered on every modal
+  regardless of whether the JS gate (`#modal-share` `hidden` attribute,
+  toggled by `setModalShareTitle` in family-hub-app's `js/app.js`)
+  intended it to be visible. The button is now correctly scoped to
+  the deep-link-shareable detail modals (Recipes, Lists items, Notes
+  items, etc.) and stays hidden on every other modal.
+
+This bug also affected family-hub-app `main` before the design-system
+extraction, but only became visible during PR-FHA-1's visual review.
+
 ## [1.0.1] -- 2026-05-03
 
 Patch release closing four items surfaced during the family-hub-app

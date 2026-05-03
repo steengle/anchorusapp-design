@@ -932,7 +932,15 @@ body.mode-intimate .modal-header h3 {
 }
 
 /* Inline share affordance in the modal header. Same hit area as
-   .modal-close-btn so the two read as a pair. */
+   .modal-close-btn so the two read as a pair.
+
+   The JS gate at js/app.js:setModalShareTitle uses the `hidden`
+   attribute to scope this button to the specific detail modals that
+   carry deep-link-shareable content (Recipes, Lists items, Notes
+   items, etc.) -- so the [hidden] rule below is load-bearing. Without
+   it, the class-based `display: inline-flex` would beat the UA's
+   `[hidden] { display: none }` on specificity, and the share button
+   would render on every modal regardless of whether JS unhid it. */
 .modal-share-btn {
     background: transparent;
     border: 0;
@@ -943,8 +951,9 @@ body.mode-intimate .modal-header h3 {
     align-items: center;
     transition: color .1s;
 }
-.modal-share-btn:hover { color: var(--sage-500); }
-.modal-share-btn .icon { width: 1.1rem; height: 1.1rem; }
+.modal-share-btn[hidden] { display: none; }
+.modal-share-btn:hover   { color: var(--sage-500); }
+.modal-share-btn .icon   { width: 1.1rem; height: 1.1rem; }
 
 .modal-body {
     padding: 1.25rem;
