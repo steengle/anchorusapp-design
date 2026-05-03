@@ -1,0 +1,174 @@
+/* =================================================================
+   Anchor Us Design System -- responsive.css
+
+   Breakpoints + non-screen media features. Loaded last so consumer
+   overrides in css/app.css can land later in the cascade if needed.
+
+   Breakpoints:
+     768px -- tablet to phone hand-off; sidebar collapses to drawer
+     600px -- small-phone density: form/list reflow, popovers go full
+     480px -- narrow-phone: auth padding, modal margin
+
+   Non-screen media:
+     display-mode: standalone   -- iOS PWA safe-area-inset
+     prefers-reduced-motion     -- disable transitions/animations
+     hover: none                -- touch device fallbacks
+   ================================================================= */
+
+
+/* =================================================================
+   <= 768px: tablet boundary -- shell collapses
+   ================================================================= */
+@media (max-width: 768px) {
+    /* App shell becomes single-column; sidebar slides in/out as
+       off-canvas drawer. */
+    .app-shell {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: var(--topbar-h) 1fr;
+        grid-template-areas:
+            "topbar"
+            "content";
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        transition: left .25s var(--ease);
+        z-index: 200;
+    }
+    .sidebar.open { left: 0; }
+    .sidebar-close { display: block; }
+
+    /* Hamburger lives in the topbar's left slot on mobile. */
+    .menu-toggle { display: inline-flex; }
+
+    /* Tighter content padding on small screens. */
+    .content {
+        padding: 1rem;
+        /* Bottom-pad clears any consumer-rendered bottom tab bar
+           (var(--tab-bar-h) defaults to 0). */
+        padding-bottom: calc(1rem + var(--tab-bar-h, 0px));
+    }
+
+    .topbar { padding: 0 1rem; }
+
+    /* Promote the topbar title to a real page header on mobile -- 1rem
+       sage reads as a toolbar label on a touch viewport, so step up to
+       the .page-title size and let it anchor the view. Width is
+       bounded with ellipsis so a long route name can't push the
+       right-side controls off-screen. */
+    .topbar-title {
+        font-size: 22px;
+        line-height: 30px;
+        color: var(--ink);
+        max-width: calc(100vw - 140px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .user-name { display: none; }
+
+    /* Form 2-up rows stack on mobile. */
+    .form-group-2col { grid-template-columns: 1fr; }
+
+    /* Definition list stacks key/value vertically. */
+    .def-list,
+    .def-list-compact { grid-template-columns: 1fr; }
+    .def-list dt { margin-bottom: 2px; }
+
+    /* Install banner: full-width, lifted above any bottom tab bar. */
+    .install-banner {
+        right: 8px;
+        left: 8px;
+        width: auto;
+        max-width: none;
+        bottom: calc(var(--tab-bar-h, 0px) + 8px);
+        padding: .8rem .9rem;
+    }
+    .install-banner-body { gap: .6rem; }
+    .install-banner-icon { width: 36px; height: 36px; }
+    .install-banner-title { font-size: .9rem; }
+}
+
+
+/* =================================================================
+   <= 600px: small-phone density
+   ================================================================= */
+@media (max-width: 600px) {
+    /* Modals lose all margin. */
+    .modal {
+        max-width: 100%;
+        margin: 0 .5rem;
+        border-radius: var(--radius);
+    }
+
+    /* Popovers go full width minus gutters so column-header filters
+       stay tappable on phones. */
+    .txn-filter-popover {
+        position: fixed;
+        left: 8px;
+        right: 8px;
+        max-width: none;
+        min-width: 0;
+        top: auto;
+    }
+}
+
+
+/* =================================================================
+   <= 480px: narrow-phone
+   ================================================================= */
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 1.75rem;
+    }
+
+    .settings-tab {
+        font-size: .65rem;
+        padding: .4rem .25rem;
+    }
+
+    .settings-panel .flex.gap-sm { flex-wrap: wrap; }
+    .settings-panel .btn-sm { flex: 1 1 auto; min-width: 0; }
+}
+
+
+/* =================================================================
+   PWA standalone mode (iOS notch + home indicator safe areas)
+   ================================================================= */
+@media (display-mode: standalone) {
+    .topbar {
+        padding-top: env(safe-area-inset-top, 0);
+    }
+    .sidebar {
+        padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+}
+
+
+/* =================================================================
+   Reduced motion -- BRAND_V2.md §11 accessibility commitment.
+   Disable all custom animations and transitions when the user has
+   asked the OS to dial down motion.
+   ================================================================= */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+
+/* =================================================================
+   Touch devices -- :hover doesn't fire predictably, so keep
+   hover-revealed UI permanently visible at low opacity on touch.
+   ================================================================= */
+@media (hover: none) {
+    .notif-item-delete { opacity: .6; }
+    .notif-item-delete:active { opacity: 1; }
+}

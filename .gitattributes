@@ -1,0 +1,12 @@
+# Line endings: enforce LF for all text. The DS package is consumed by
+# Docker images that build on Linux; CRLF in CSS or PHP-served static
+# files isn't fatal but mismatched endings make diffs noisy.
+* text=auto eol=lf
+
+# Binary
+*.png  binary
+*.jpg  binary
+*.gif  binary
+*.ico  binary
+*.woff binary
+*.woff2 binary

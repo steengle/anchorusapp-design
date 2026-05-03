@@ -1,0 +1,11 @@
+{
+    "name": "anchorusapp/design",
+    "type": "library",
+    "description": "Anchor Us Brand v2 design system: tokens, base CSS, canonical components, responsive rules, icon sprite, brand marks. Static assets only -- no PHP autoload, no build step, no runtime.",
+    "license": "proprietary",
+    "homepage": "https://anchorusapp.com",
+    "support": {
+        "source": "https://github.com/steengle/anchorusapp-design"
+    },
+    "keywords": ["anchor-us", "anchorusapp", "design-system", "brand-v2", "css", "icons"]
+}

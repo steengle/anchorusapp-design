@@ -1,0 +1,1622 @@
+/* =================================================================
+   Anchor Us Design System -- components.css
+
+   Canonical shared components. Loaded after tokens.css and base.css,
+   before responsive.css.
+
+   What lives here:
+     - App shell (grid, sidebar plumbing, topbar, content)
+     - Brand mark composition (sidebar-brand, auth-mark)
+     - Auth screen
+     - Buttons (primary/accent/secondary/danger/sm/icon/loading/xs)
+     - Forms (input/group/label/error/select/textarea/with-trailer)
+     - Cards
+     - Page headers
+     - Pills
+     - Modals (modal/confirm-dialog/rule-builder)
+     - Toasts
+     - Segmented controls
+     - Empty state
+     - Skeleton + spinner
+     - Notice banners
+     - Dot indicator
+     - Avatars
+     - Definition list
+     - Filter popover
+     - Settings tabs
+     - Install banner
+     - Copper accents
+
+   What does NOT live here (stays in consumer's local css/app.css):
+     - Sidebar nav item styling (each app has its own active/hover)
+     - App-specific surfaces (.chore-*, .anchor-*, .cp-table,
+       .status-job-*, .provision-log, .health-*, etc.)
+     - Mode-intimate rules outside generic components
+
+   Body class .mode-intimate toggles intimate-mode rules. Consumers
+   that don't use intimate mode simply never add the class.
+   ================================================================= */
+
+
+/* =================================================================
+   APP SHELL
+   ================================================================= */
+
+.app-shell {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+    grid-template-rows: var(--topbar-h) 1fr;
+    grid-template-areas:
+        "sidebar topbar"
+        "sidebar content";
+    min-height: 100vh;
+}
+
+
+/* =================================================================
+   SIDEBAR (shell only -- nav-item styling lives per-consumer)
+   ================================================================= */
+
+.sidebar {
+    grid-area: sidebar;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-fg-strong);
+    border-right: 0.5px solid var(--sidebar-border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: 100;
+}
+
+/* Sidebar header: brand mark + wordmark stack. Sits flush at top so
+   its bottom rule lines up with the topbar's bottom rule, forming one
+   continuous horizontal line across the top of the app. */
+.sidebar-brand {
+    height: var(--topbar-h);
+    padding: 0 var(--space-4);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: var(--space-2);
+    position: relative;
+}
+
+/* Copper-tinted bottom rule -- the brand-mark moment in the sidebar
+   header. Transparent fade at the edges so it reads as a polished
+   metallic seam, not a hard divider. */
+.sidebar-brand::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, var(--copper-lt) 0%, var(--copper-dk) 50%, var(--copper-lt) 100%);
+    opacity: .45;
+}
+
+/* Brand mark image -- 44x44 carries its own copper gradient (baked
+   into mark-glyph.svg). No CSS tinting; let the SVG render its own
+   metallic. */
+.sidebar-brand-mark {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+}
+
+/* Stacked wordmark: brand name on top, sub-label below. */
+.sidebar-brand-stack {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-width: 0;
+    line-height: 1;
+}
+
+/* Brand name -- Fraunces wordmark.
+   Two name selectors are aliased so both consumers' existing markup
+   keeps working: family-hub-app uses .brand-text, anchorusapp-control
+   uses .brand-name. Future markup should prefer .brand-name. */
+.sidebar-brand .brand-name,
+.sidebar-brand .brand-text {
+    font-family: var(--serif-display);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--sidebar-fg-strong);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Sub-label -- the family name (FHA) or the surface name (CP, e.g.
+   "Control"). Eyebrow tracking, dimmed. Same aliasing pattern. */
+.sidebar-brand .brand-sub,
+.sidebar-brand .brand-family {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--sidebar-fg);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.sidebar-brand .brand-sub:empty,
+.sidebar-brand .brand-family:empty { display: none; }
+
+/* Sidebar close button -- visible only on mobile (drawer mode). */
+.sidebar-close {
+    display: none;
+    margin-left: auto;
+    font-size: 1.3rem;
+    color: var(--sidebar-fg);
+    padding: 0 .25rem;
+}
+
+/* Sidebar overlay scrim -- shown behind the sidebar when it's an
+   off-canvas drawer on mobile. */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(60, 55, 48, .3);
+    z-index: 199;
+}
+.sidebar-overlay.active { display: block; }
+
+
+/* =================================================================
+   TOPBAR
+   ================================================================= */
+
+.topbar {
+    grid-area: topbar;
+    height: var(--topbar-h);
+    background: var(--paper);
+    border-bottom: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-5);
+    flex-shrink: 0;
+    position: relative;
+}
+
+/* Copper-tinted bottom rule, fading from divider at the edges to
+   copper at the center. Matches the sidebar-brand stripe so the two
+   rules read as one continuous seam. */
+.topbar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right,
+        var(--divider) 0%,
+        var(--copper-lt) 40%,
+        var(--copper-dk) 50%,
+        var(--copper-lt) 60%,
+        var(--divider) 100%);
+    opacity: .45;
+}
+
+.topbar-left  { display: flex; align-items: center; gap: .5rem; }
+.topbar-right { display: flex; align-items: center; gap: .5rem; position: relative; }
+
+.menu-toggle {
+    display: none;
+    color: var(--ink-muted);
+    padding: .25rem;
+}
+
+.topbar-title {
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--sage-500);
+}
+
+.user-name { font-size: .8rem; color: var(--ink-muted); }
+
+
+/* =================================================================
+   PROFILE MENU (topbar dropdown)
+   ================================================================= */
+
+.profile-menu-trigger {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    cursor: pointer;
+    padding: .25rem;
+    border-radius: var(--radius-sm);
+    transition: background .12s var(--ease);
+}
+.profile-menu-trigger:hover { background: var(--sage-50); }
+
+.profile-menu {
+    position: absolute;
+    top: calc(var(--topbar-h) - 4px);
+    right: .75rem;
+    background: var(--paper);
+    border: 0.5px solid var(--divider);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    min-width: 170px;
+    padding: .35rem 0;
+    z-index: 300;
+}
+
+.profile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .5rem .85rem;
+    font-size: .82rem;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: background .1s var(--ease), color .1s var(--ease);
+    width: 100%;
+    text-align: left;
+}
+.profile-menu-item:hover { background: var(--sage-50); color: var(--ink); }
+.profile-menu-danger        { color: var(--danger); }
+.profile-menu-danger:hover  { background: var(--danger-bg); color: var(--danger); }
+.profile-menu-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: .6; }
+.profile-menu-sep  { height: 0.5px; background: var(--divider-soft); margin: .25rem .5rem; }
+
+
+/* =================================================================
+   CONTENT AREA
+   ================================================================= */
+
+.content {
+    grid-area: content;
+    padding: var(--space-5);
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-width: 0;
+    background: var(--linen);
+}
+
+.loading-msg {
+    text-align: center;
+    color: var(--ink-dim);
+    padding: 3rem;
+    font-size: .85rem;
+}
+
+
+/* =================================================================
+   AUTH SCREEN
+   ================================================================= */
+
+.auth-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--auth-bg);
+}
+
+.auth-card {
+    background: var(--paper);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 2.5rem;
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Brand hero block at the top of the auth card: anchor mark +
+   wordmark + tagline, all centered. Separated from the form below by
+   a soft rule so it reads as a hero, not a label. */
+.auth-hero {
+    text-align: center;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--divider-soft);
+}
+
+.auth-mark {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+.auth-mark img {
+    display: block;
+    width: 104px;
+    height: 104px;
+    /* Bare anchor glyph on a transparent background -- no tile, no
+       border-radius. The copper metallic gradient is baked into the
+       SVG so it renders identically regardless of CSS color. */
+}
+
+.auth-brand {
+    /* Intimate mode: Fraunces display-sm, SOFT 100 for rounder
+       letterforms. This is the first typographic moment a user has
+       with the app -- both customer and operator surfaces. */
+    font-family: var(--serif-display);
+    font-variation-settings: "opsz" 48, "SOFT" 100;
+    font-size: 28px;
+    line-height: 34px;
+    font-weight: 400;
+    color: var(--sage-700);
+    margin: 0 0 .35rem;
+    letter-spacing: -0.005em;
+}
+
+.auth-tagline {
+    font-family: var(--serif-display);
+    font-variation-settings: "opsz" 14, "SOFT" 100;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    color: var(--ink-muted);
+    margin: 0;
+}
+
+.auth-sub {
+    color: var(--ink-muted);
+    font-size: .85rem;
+    margin-bottom: 1.25rem;
+}
+
+.auth-card label {
+    display: block;
+    font-size: .8rem;
+    color: var(--ink-muted);
+    margin-bottom: .2rem;
+    margin-top: .9rem;
+}
+
+.auth-card input[type="email"],
+.auth-card input[type="password"],
+.auth-card input[type="text"] {
+    width: 100%;
+    padding: .55rem .75rem;
+    border: 0.5px solid var(--divider);
+    border-radius: var(--radius-sm);
+    font-size: .9rem;
+    color: var(--ink);
+    background: var(--linen);
+    outline: none;
+    transition: border-color .15s var(--ease);
+}
+.auth-card input:focus { border-color: var(--sage-500); }
+
+.auth-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: .75rem;
+}
+
+.auth-link {
+    color: var(--sage-500);
+    font-size: .8rem;
+    text-decoration: none;
+    border-bottom: 0.5px solid transparent;
+    transition: border-color .15s var(--ease);
+}
+.auth-link:hover { border-bottom-color: var(--sage-500); }
+
+.auth-hint {
+    font-size: .78rem;
+    color: var(--ink-muted);
+    margin: -.5rem 0 1rem;
+    line-height: 1.45;
+}
+.auth-hint code {
+    font-family: var(--mono);
+    font-size: .72rem;
+    background: var(--sage-50);
+    padding: 1px 4px;
+    border-radius: var(--radius-2xs);
+    white-space: nowrap;
+}
+
+/* Auth submits stretch the full card width and sit below the form
+   with breathing room. Selector covers btn-primary / btn-accent /
+   btn-danger so a class swap doesn't drop the layout override. */
+.auth-card .btn-primary,
+.auth-card .btn-accent,
+.auth-card .btn-danger {
+    display: block;
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+/* Generic form checkbox + radio accent -- native controls on a linen
+   background render almost-white outlines by default; sage gives them
+   a clear checked state. */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .8rem;
+    color: var(--ink-muted);
+    cursor: pointer;
+}
+input[type="checkbox"], input[type="radio"] { accent-color: var(--sage-500); }
+
+
+/* =================================================================
+   BUTTONS
+   ================================================================= */
+
+.btn-primary,
+.btn-accent,
+.btn-secondary,
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 26px;
+    font-weight: 500;
+    padding: 9px 20px;
+    min-height: 44px;
+    min-width: 80px;
+    border: 0.5px solid transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 150ms var(--ease),
+                color 150ms var(--ease),
+                border-color 150ms var(--ease),
+                box-shadow 150ms var(--ease);
+}
+.btn-primary:disabled,
+.btn-accent:disabled,
+.btn-secondary:disabled,
+.btn-danger:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+
+/* Primary / accent (alias) -- solid sage, paper text. */
+.btn-primary,
+.btn-accent {
+    background: var(--sage-500);
+    color: var(--paper);
+}
+.btn-primary:hover:not(:disabled),
+.btn-accent:hover:not(:disabled) {
+    background: var(--sage-600);
+    box-shadow: var(--shadow-sm);
+}
+.btn-primary:focus-visible,
+.btn-accent:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+}
+
+/* Secondary -- transparent outline. */
+.btn-secondary {
+    background: transparent;
+    color: var(--ink-muted);
+    border-color: var(--divider);
+}
+.btn-secondary:hover:not(:disabled) {
+    background: var(--sage-50);
+    color: var(--ink);
+    border-color: var(--sage-200);
+}
+.btn-secondary:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+}
+
+/* Danger -- destructive action. */
+.btn-danger {
+    background: var(--danger);
+    color: var(--paper);
+}
+.btn-danger:hover:not(:disabled) {
+    background: var(--danger-hover);
+    box-shadow: var(--shadow-sm);
+}
+.btn-danger:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+}
+
+/* Compact variant -- in-row actions, toolbars, table-cell buttons. */
+.btn-sm {
+    font-size: 13px;
+    line-height: 1;
+    padding: 6px 14px;
+    min-height: 32px;
+    min-width: 0;
+}
+
+/* Extra-small -- inline cell actions only. */
+.btn-xs {
+    font-size: .7rem;
+    padding: .15rem .4rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    border: 0.5px solid transparent;
+}
+.btn-xs.btn-danger {
+    color: var(--danger);
+    background: var(--danger-bg);
+    border-color: rgba(180, 60, 60, .2);
+}
+.btn-xs.btn-danger:hover {
+    background: rgba(180, 60, 60, .2);
+}
+
+/* Transparent icon-only button -- share, close, refresh, etc. */
+.btn-icon {
+    background: transparent;
+    border: 0;
+    padding: .35rem;
+    border-radius: var(--radius-sm);
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: color .1s, background .1s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-icon:hover { color: var(--sage-500); background: var(--hover-bg); }
+.btn-icon .icon { width: 1.1rem; height: 1.1rem; }
+
+/* Loading state: spinner inside button, label hidden. */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border: 2px solid var(--divider);
+    border-top-color: var(--sage-500);
+    border-radius: 50%;
+    animation: efh-spin 0.6s linear infinite;
+}
+.btn-danger.btn-loading::after { border-top-color: var(--danger); }
+
+/* Intimate mode: pill-shaped buttons for Us / onboarding / invite. */
+body.mode-intimate .btn-primary,
+body.mode-intimate .btn-accent,
+body.mode-intimate .btn-secondary,
+body.mode-intimate .btn-danger {
+    border-radius: var(--radius-pill);
+}
+
+
+/* =================================================================
+   FORMS
+   ================================================================= */
+
+.form-error {
+    background: var(--danger-bg);
+    color: var(--danger);
+    padding: .5rem .7rem;
+    border-radius: var(--radius-sm);
+    font-size: .8rem;
+    margin-bottom: .75rem;
+}
+
+.form-group { margin-bottom: .9rem; }
+
+.form-group label,
+.form-label {
+    display: block;
+    font-size: .8rem;
+    color: var(--ink-muted);
+    margin-bottom: .2rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: .65rem .85rem;
+    border: 0.5px solid var(--divider);
+    border-radius: var(--radius-sm);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--ink);
+    background: var(--linen-inset);
+    outline: none;
+    /* Transition background-color (not the `background` shorthand) so
+       the chevron background-image on select.form-input doesn't
+       interpolate from its default 0% 0% origin when the OS select
+       popup closes. */
+    transition: border-color 150ms var(--ease),
+                box-shadow 150ms var(--ease),
+                background-color 150ms var(--ease);
+}
+.form-input::placeholder { color: var(--ink-dim); }
+.form-input:focus {
+    border-color: var(--sage-400);
+    background: var(--paper);
+    box-shadow: var(--shadow-focus);
+}
+.form-input:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    background-color: var(--linen-inset);
+}
+
+.form-input-sm,
+.form-input.form-input-sm {
+    font-size: 13px;
+    line-height: 1;
+    padding: 6px 10px;
+    min-height: 32px;
+}
+
+select.form-input {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238a8078'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .6rem center;
+    padding-right: 2rem;
+    line-height: 1.4;
+    cursor: pointer;
+    height: auto;
+    border-radius: var(--radius-xs);
+}
+select.form-input.form-input-sm { padding-right: 2rem; }
+select.form-input:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    background-color: var(--linen-inset);
+}
+select.form-input option {
+    background: var(--paper);
+    color: var(--ink);
+    font-size: .85rem;
+}
+
+textarea.form-input { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+/* Per-field hint line under an input. */
+.form-help {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: var(--space-1);
+    line-height: 1.4;
+}
+.form-help code {
+    font-size: 11.5px;
+    background: var(--hover-bg);
+    padding: 1px 5px;
+    border-radius: var(--radius-2xs);
+}
+
+/* Two-up form rows for related dropdowns (region + plan, etc.). */
+.form-group-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    margin-bottom: .9rem;
+}
+.form-group-2col > .form-group { margin-bottom: 0; }
+
+/* Subtle icon-only toggle button used between form elements (caret
+   that reveals an optional field). Works standalone or inside
+   .input-with-trailer. */
+.input-trailer-btn {
+    background: transparent;
+    border: 0;
+    padding: 0.25rem;
+    color: var(--ink-muted);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: color 120ms ease, background-color 120ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.input-trailer-btn:hover { color: var(--ink); }
+.input-trailer-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+}
+.input-trailer-btn > .icon { transition: transform 120ms ease; }
+.input-trailer-btn[aria-expanded="true"] > .icon { transform: rotate(180deg); }
+
+/* Input with trailing icon button overlaid inside the input's right
+   edge (search+clear, password reveal). */
+.input-with-trailer {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+}
+.input-with-trailer > .form-input { flex: 1; padding-right: 2.25rem; }
+.input-with-trailer > .input-trailer-btn {
+    position: absolute;
+    right: 0.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
+/* =================================================================
+   CARDS
+   ================================================================= */
+
+.card {
+    background: var(--paper);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.25rem;
+}
+
+/* Intimate mode: more breathing room and softer corners. */
+body.mode-intimate .card {
+    padding: 1.75rem;
+    border-radius: var(--radius-lg);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: .75rem;
+}
+
+.card-title {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+/* Empty body for "no rows yet" cells. */
+.card-empty {
+    color: var(--ink-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--space-4);
+    font-size: 13px;
+}
+
+/* Summary-card pattern (Budget, Allowance dashboards). */
+.summary-card {
+    background: var(--linen-inset);
+    border-radius: var(--radius);
+    padding: .75rem;
+}
+.summary-label {
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--ink-dim);
+    margin-bottom: .2rem;
+}
+.summary-value {
+    font-size: 1.3rem;
+    font-weight: 500;
+    font-family: var(--mono);
+}
+
+
+/* =================================================================
+   PAGE HEADERS
+   ================================================================= */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.module-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.page-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 30px;
+    font-weight: 400;
+    color: var(--ink);
+}
+
+
+/* =================================================================
+   PILLS
+   ================================================================= */
+
+.pill {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    font-family: var(--sans);
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.pill-gold    { background: var(--ev-gold);   color: var(--ev-gold-text); }
+.pill-blue    { background: var(--ev-blue);   color: var(--ev-blue-text); }
+.pill-green   { background: var(--ev-green);  color: var(--ev-green-text); }
+.pill-red     { background: var(--ev-red);    color: var(--ev-red-text); }
+.pill-purple  { background: var(--ev-purple); color: var(--ev-purple-text); }
+.pill-copper  { background: var(--ev-copper); color: var(--ev-copper-text); }
+
+
+/* =================================================================
+   MODALS
+   ================================================================= */
+
+.modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(61, 56, 48, .4);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal {
+    background: var(--paper);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 500px;
+    max-height: 85vh;
+    /* Flex column so the body scrolls internally while the
+       header/footer stay fixed. Overflow:hidden clips the scrollbar
+       to the rounded corners. */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 0.5px solid var(--divider-soft);
+    flex-shrink: 0;
+}
+
+.modal-header h3 {
+    font-family: var(--serif);
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 400;
+    color: var(--ink);
+}
+
+/* Intimate mode: modal titles use Fraunces display face. */
+body.mode-intimate .modal-header h3 {
+    font-family: var(--serif-display);
+    font-variation-settings: "opsz" 48, "SOFT" 100;
+    font-size: 22px;
+    line-height: 30px;
+}
+
+.modal-close-btn { font-size: 1.3rem; color: var(--ink-dim); padding: 0 .25rem; }
+.modal-close-btn:hover { color: var(--ink); }
+
+.modal-body {
+    padding: 1.25rem;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.modal-footer {
+    display: flex; gap: .5rem; justify-content: flex-end;
+    padding: .75rem 1.25rem;
+    border-top: 0.5px solid var(--divider-soft);
+    flex-shrink: 0;
+}
+
+/* Right-aligned action row for use inside .modal-body (the
+   Cancel/Submit pair). Use .modal-footer for persistent chrome. */
+.modal-actions {
+    display: flex;
+    gap: .5rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Confirm dialog -- centered, smaller, used for destructive
+   confirmations and simple yes/no questions. */
+.confirm-dialog {
+    background: var(--paper);
+    border: 0.5px solid var(--divider);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+}
+.confirm-dialog p { margin-bottom: 1.25rem; font-size: .9rem; }
+.confirm-actions { display: flex; gap: .5rem; justify-content: center; }
+
+
+/* =================================================================
+   TOASTS
+   ================================================================= */
+
+.toast-container {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    pointer-events: none;
+}
+
+.toast {
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-lg);
+    padding: 10px 22px 10px 18px;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 22px;
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: toastIn .25s var(--ease) forwards;
+    max-width: 360px;
+    border-left: 3px solid var(--sage-500);
+}
+
+.toast-success   { border-left-color: var(--success); }
+.toast-error     { border-left-color: var(--danger); }
+.toast-info      { border-left-color: var(--info); }
+.toast-celebrate { border-left-color: var(--copper-dk); }
+
+.toast-out { animation: toastOut .2s var(--ease) forwards; }
+
+.toast-report-link {
+    background: transparent;
+    border: 0;
+    color: var(--ink-muted);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-left: 0.75em;
+    padding: 0;
+}
+.toast-report-link:hover { color: var(--ink); }
+
+@keyframes toastIn  { to { opacity: 1; transform: translateY(0); } }
+@keyframes toastOut { to { opacity: 0; transform: translateY(10px); } }
+
+
+/* =================================================================
+   SEGMENTED CONTROL (canonical single-select UI)
+   Two variants:
+     .view-toggle-btn / .active   filled sage pill (chores, meals)
+     .view-btn / .view-active     divider-separated (calendar, budget)
+   ================================================================= */
+
+.view-toggle {
+    display: inline-flex;
+    border: 0.5px solid var(--divider);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.view-toggle-btn {
+    padding: .3rem .7rem;
+    font-size: .75rem;
+    border: none;
+    background: var(--paper);
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: background .15s, color .15s;
+}
+.view-toggle-btn:hover { background: var(--sage-50); }
+.view-toggle-btn.active { background: var(--sage-500); color: var(--paper); }
+
+.view-btn {
+    padding: .3rem .7rem;
+    font-size: .75rem;
+    color: var(--ink-muted);
+    background: none;
+    border: none;
+    border-right: 0.5px solid var(--divider);
+    cursor: pointer;
+    font-family: inherit;
+}
+.view-btn:last-child { border-right: none; }
+.view-btn:hover { background: var(--sage-50); }
+.view-active { background: var(--sage-100); color: var(--sage-500); }
+
+
+/* =================================================================
+   EMPTY STATE
+   Three layers (all optional, all stack centered):
+     .empty-state-art    illustration slot (SVG or img)
+     .empty-state-title  serif heading
+     .empty-state-hint   muted body
+   Plain <p> inside .empty-state still works as a shorthand.
+   ================================================================= */
+
+.empty-state {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--ink-muted);
+}
+
+.empty-state-art {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+.empty-state-art img,
+.empty-state-art svg {
+    display: block;
+    width: 120px;
+    height: 120px;
+    max-width: 100%;
+    opacity: 0.9;
+}
+
+.empty-state-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 26px;
+    font-weight: 400;
+    color: var(--ink);
+    margin: 0 0 .4rem;
+}
+
+.empty-state-hint {
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--ink-muted);
+    max-width: 36ch;
+    margin: 0 auto;
+}
+
+.empty-state > p {
+    font-size: 14px;
+    line-height: 22px;
+    margin: .35rem auto;
+    max-width: 36ch;
+}
+
+
+/* =================================================================
+   NOTICE BANNERS (inline persistent module banners)
+   For transient confirmations, use toasts instead.
+   ================================================================= */
+
+.notice {
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-3);
+    font-size: 13px;
+}
+.notice-info    { background: var(--info-bg);    color: var(--info); }
+.notice-success { background: var(--success-bg); color: var(--success); }
+.notice-warning { background: var(--warning-bg); color: var(--warning); }
+.notice-error   { background: var(--danger-bg);  color: var(--danger); }
+
+.loading {
+    color: var(--ink-muted);
+    font-style: italic;
+    padding: var(--space-4);
+    text-align: center;
+}
+
+
+/* =================================================================
+   DOT INDICATOR
+   10x10 circle for inline color cues (feed names, category labels).
+   Color comes from inline style: <span class="dot" style="background:#2d64a0">
+   ================================================================= */
+
+.dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    vertical-align: middle;
+    flex-shrink: 0;
+    margin-right: .4rem;
+}
+
+
+/* =================================================================
+   AVATARS
+   ================================================================= */
+
+.avatar-sm {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .65rem; font-weight: 500;
+    flex-shrink: 0;
+}
+.avatar-md {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .75rem; font-weight: 500;
+    flex-shrink: 0;
+}
+.avatar-lg {
+    width: 48px; height: 48px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .9rem; font-weight: 500;
+    flex-shrink: 0;
+}
+.avatar-pic {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.avatar-ring {
+    border: 2px solid currentColor;
+    box-sizing: border-box;
+}
+
+
+/* =================================================================
+   DEFINITION LIST (key/value tile content)
+   ================================================================= */
+
+.def-list {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: var(--space-2) var(--space-4);
+    font-size: 13.5px;
+}
+.def-list dt {
+    color: var(--ink-muted);
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    font-weight: 500;
+}
+.def-list dd { margin: 0; color: var(--ink); word-break: break-word; }
+.def-list dd code { background: var(--linen-inset); padding: 1px 6px; border-radius: var(--radius-2xs); }
+
+.def-list-compact {
+    grid-template-columns: 110px 1fr;
+    gap: 4px var(--space-3);
+    font-size: 12.5px;
+    margin-top: var(--space-3);
+}
+
+
+/* =================================================================
+   FILTER POPOVER (column-header funnel + popover panel)
+   Shared across Budget, Feedback triage, Support portal, and any
+   future list with column-level filters.
+   ================================================================= */
+
+.txn-hdr-filter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-left: 4px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-xs);
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease;
+}
+.txn-hdr-filter:hover {
+    background: var(--sage-50);
+    color: var(--ink);
+}
+.txn-hdr-filter.is-active { color: var(--sage-500); }
+.txn-hdr-filter .icon { width: 12px; height: 12px; }
+
+.txn-filter-popover {
+    position: absolute;
+    min-width: 220px;
+    max-width: 320px;
+    padding: 0.75rem;
+    background: var(--paper);
+    border: 0.5px solid var(--divider);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    z-index: 40;
+    display: none;
+}
+.txn-filter-popover.is-open { display: block; }
+
+.txn-filter-popover .tfp-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+.txn-filter-popover .tfp-row > label {
+    flex: 0 0 3.5rem;
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+}
+.txn-filter-popover .tfp-row > input,
+.txn-filter-popover .tfp-row > select {
+    flex: 1 1 auto;
+}
+.txn-filter-popover .tfp-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 0.5px solid var(--divider-soft);
+}
+.txn-filter-popover .tfp-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.4rem;
+    margin-bottom: 0.5rem;
+    background: var(--sage-50);
+    border-radius: var(--radius-pill);
+    font-size: 0.7rem;
+}
+.txn-filter-popover .tfp-pill-x {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--ink-muted);
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1;
+}
+.txn-filter-popover .tfp-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 0.25rem 0 0.5rem 0;
+    border: 0.5px solid var(--divider);
+    border-radius: var(--radius-xs);
+}
+.txn-filter-popover .tfp-list-item {
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+.txn-filter-popover .tfp-list-item:hover,
+.txn-filter-popover .tfp-list-item.is-focus {
+    background: var(--sage-50);
+}
+.txn-filter-popover .tfp-list-empty {
+    padding: 0.4rem 0.6rem;
+    color: var(--ink-muted);
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+
+/* =================================================================
+   SETTINGS TABS
+   ================================================================= */
+
+.settings-tabs {
+    display: flex;
+    gap: .25rem;
+    padding: .25rem;
+    background: var(--linen-inset);
+    border-radius: var(--radius);
+    margin-bottom: 1.25rem;
+}
+
+.settings-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: .5rem .75rem;
+    border: none;
+    background: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--sans);
+    font-size: .8rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: background .15s var(--ease), color .15s var(--ease);
+    text-align: center;
+    word-break: break-word;
+    line-height: 1.2;
+}
+.settings-tab:hover {
+    color: var(--ink);
+    background: var(--sage-50);
+}
+.settings-tab.active {
+    background: var(--paper);
+    color: var(--sage-500);
+    box-shadow: var(--shadow-sm);
+}
+
+.settings-panel { display: none; }
+.settings-panel.active { display: block; }
+
+/* Prevent integration content from pushing page width on mobile. */
+.settings-panel .card { overflow: hidden; min-width: 0; }
+.settings-panel .form-input,
+.settings-panel textarea {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.integration-section {
+    border-top: 0.5px solid var(--divider-soft);
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+.integration-section:first-child {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+}
+.integration-section-title {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: .85rem;
+    color: var(--ink);
+    margin-bottom: .75rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+}
+.integration-section-title .text-dim {
+    font-weight: 400;
+    font-size: .7rem;
+}
+
+
+/* =================================================================
+   INSTALL BANNER (PWA "Add to Home Screen")
+   Shown when the browser fires `beforeinstallprompt`. Hidden by
+   default; consumer JS flips display to flex when conditions are met.
+   ================================================================= */
+
+.install-banner {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    width: 360px;
+    max-width: calc(100vw - 32px);
+    background: var(--paper);
+    border: 0.5px solid var(--divider);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: .9rem 1rem;
+    z-index: 140;
+    animation: install-banner-in .35s var(--ease) both;
+}
+@keyframes install-banner-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.install-banner-body {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+.install-banner-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+}
+.install-banner-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.install-banner-text { flex: 1; min-width: 0; }
+.install-banner-title {
+    font-family: var(--serif);
+    font-size: .95rem;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.3;
+}
+.install-banner-sub {
+    font-size: .75rem;
+    color: var(--ink-muted);
+    margin-top: .15rem;
+}
+.install-banner-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: .4rem;
+}
+.install-banner-dismiss,
+.install-banner-accept {
+    padding: .45rem .8rem;
+    border-radius: var(--radius-sm);
+    font-size: .8rem;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .12s var(--ease), border-color .12s var(--ease);
+}
+.install-banner-dismiss {
+    background: transparent;
+    color: var(--ink-muted);
+    border: 0.5px solid transparent;
+}
+.install-banner-dismiss:hover {
+    color: var(--ink);
+    background: var(--sage-50);
+}
+.install-banner-accept {
+    background: var(--sage-500);
+    color: var(--linen);
+    border: 0.5px solid var(--sage-600);
+}
+.install-banner-accept:hover { background: var(--sage-600); }
+
+
+/* =================================================================
+   SKELETON / SPINNER / FADE-IN
+   ================================================================= */
+
+@keyframes efh-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skel-block {
+    background: linear-gradient(
+        90deg,
+        var(--divider-soft) 25%,
+        var(--linen-inset) 50%,
+        var(--divider-soft) 75%
+    );
+    background-size: 200% 100%;
+    animation: efh-shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-sm);
+}
+
+.skel-img {
+    background: linear-gradient(
+        90deg,
+        var(--divider-soft) 25%,
+        var(--linen-inset) 50%,
+        var(--divider-soft) 75%
+    );
+    background-size: 200% 100%;
+    animation: efh-shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-dim);
+    font-size: .6rem;
+}
+
+@keyframes efh-fadein {
+    from { opacity: 0; transform: translateY(5px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.content-loaded { animation: efh-fadein 0.18s ease forwards; }
+
+@keyframes efh-spin { to { transform: rotate(360deg); } }
+
+.efh-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--divider);
+    border-top-color: var(--sage-500);
+    border-radius: 50%;
+    animation: efh-spin 0.6s linear infinite;
+    vertical-align: middle;
+}
+.efh-spinner-sm { width: 10px; height: 10px; border-width: 1.5px; }
+.efh-spinner-lg { width: 22px; height: 22px; border-width: 2.5px; }
+
+.efh-loading-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: var(--ink-dim);
+    font-size: .8rem;
+    gap: .5rem;
+}
+
+@keyframes efh-fadeReplace {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+.efh-fade-in { animation: efh-fadeReplace 0.15s ease forwards; }
+
+
+/* =================================================================
+   NAVIGATION PROGRESS BAR (top-of-page hairline during route load)
+   Consumers wire #efh-progress in their app shell.
+   ================================================================= */
+
+#efh-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--sage-500);
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    border-radius: 0 1px 1px 0;
+}
+#efh-progress.is-loading {
+    opacity: 1;
+    width: 80%;
+    transition: width 2.5s cubic-bezier(0.05, 0.5, 0.3, 1), opacity 0.05s;
+}
+#efh-progress.is-done {
+    opacity: 1;
+    width: 100%;
+    transition: width 0.15s ease-out;
+}
+#efh-progress.is-hiding {
+    opacity: 0;
+    transition: opacity 0.35s ease 0.1s;
+}
+
+
+/* =================================================================
+   COPPER METALLIC ACCENTS
+   Brand-mark moments and small celebration touches. Use sparingly --
+   never on body text, status pills, or large filled areas. Treat
+   copper like a spice: every use is a decision, not a default.
+   ================================================================= */
+
+.copper-text {
+    background: linear-gradient(to right, var(--copper-dk), var(--copper-lt), var(--copper-dk));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.copper-border {
+    border-image: linear-gradient(to right, var(--copper-dk), var(--copper-lt), var(--copper-dk)) 1;
+}
+
+.copper-rule {
+    height: 1px;
+    border: none;
+    background: linear-gradient(to right, transparent, var(--copper-lt), transparent);
+    margin: 1rem 0;
+}

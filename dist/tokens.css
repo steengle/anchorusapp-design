@@ -1,0 +1,195 @@
+/* =================================================================
+   Anchor Us Design System -- tokens.css
+
+   Brand v2 token foundation. See family-hub-app/docs/BRAND_V2.md for
+   the canonical specification of every token below.
+
+   This file defines variables only. No selectors, no rules, no media
+   queries. Components reference these via var(--name) -- never
+   hard-coded hex values, never literal sizes.
+
+   Surface-indirection variables (--sidebar-bg, --auth-bg, etc.) live
+   at the bottom. Consumers override these in their local app.css to
+   express approved divergences (e.g., operator console sage-700
+   sidebar) without forking components.
+   ================================================================= */
+
+:root {
+    /* ------------------------------------------------------------
+       Sage -- primary brand color.
+       Promoted from v1 --anchor token. The whole UI lives on this.
+       ------------------------------------------------------------ */
+    --sage-50:   #f3f5f1;
+    --sage-100:  #e6ebe4;
+    --sage-200:  #c9d3c5;
+    --sage-400:  #869681;
+    --sage-500:  #5a6b5a;   /* primary */
+    --sage-600:  #4a594a;
+    --sage-700:  #3b4a3b;
+    --sage-900:  #1f2a1f;
+
+    /* ------------------------------------------------------------
+       Gold -- secondary warm accent.
+       Streak badges, "last note yesterday" warmth. Never a primary
+       action -- sage carries that role.
+       ------------------------------------------------------------ */
+    --gold-100:  #f0e8d0;
+    --gold-500:  #8b7340;
+    --gold-700:  #6b5730;
+
+    /* ------------------------------------------------------------
+       Copper -- brand-mark metallic accent.
+       A polished-metal gradient (dark -> light -> dark). Reserved for
+       brand-mark moments and small celebration touches. Never on body
+       text, status pills, or large filled areas.
+       ------------------------------------------------------------ */
+    --copper-dk: #7a3f24;
+    --copper-lt: #eab393;
+
+    /* ------------------------------------------------------------
+       Linen -- surfaces.
+       The whole brand lives on #fffdf8.
+       ------------------------------------------------------------ */
+    --linen:        #fffdf8;
+    --linen-inset:  #faf6ef;
+    --linen-shade:  #f7f2ea;
+    --paper:        #ffffff;
+
+    /* ------------------------------------------------------------
+       Ink -- text.
+       Warm near-black scale.
+       ------------------------------------------------------------ */
+    --ink:        #3d3830;
+    --ink-label:  #4a4238;   /* print section labels */
+    --ink-subtle: #6b6055;   /* print captions / notes */
+    --ink-muted:  #8a8078;
+    --ink-dim:    #9a8f80;   /* AA-large on linen (~3.1:1) */
+
+    /* ------------------------------------------------------------
+       Dividers (Phase 7 contrast-audited values).
+       ------------------------------------------------------------ */
+    --divider:      #bfb299;  /* ~2.0:1 on linen -- structural lines */
+    --divider-soft: #dbd0ba;  /* ~1.5:1 on linen -- row separators  */
+    --hover-bg:     rgba(61, 56, 48, .04);
+
+    /* ------------------------------------------------------------
+       Semantic.
+       ------------------------------------------------------------ */
+    --success:    #4b823c;
+    --success-bg: rgba(75, 130, 60, .1);
+    --warning:    #a07d1a;
+    --warning-bg: rgba(160, 125, 26, .1);
+    --danger:     #b43c3c;
+    --danger-hover: #9a3333;
+    --danger-bg:  rgba(180, 60, 60, .1);
+    --info:       #2d64a0;
+    --info-bg:    rgba(45, 100, 160, .1);
+
+    /* ------------------------------------------------------------
+       Event colors -- used by .pill-* color modifiers and any
+       calendar-style colour-coded surface.
+       ------------------------------------------------------------ */
+    --ev-gold:      rgba(139, 115, 64, .12);  --ev-gold-text:   #8b7340;
+    --ev-blue:      rgba(45, 100, 160, .1);   --ev-blue-text:   #2d64a0;
+    --ev-green:     rgba(75, 130, 60, .1);    --ev-green-text:  #4b823c;
+    --ev-red:       rgba(180, 60, 60, .1);    --ev-red-text:    #b43c3c;
+    --ev-purple:    rgba(154, 77, 186, .1);   --ev-purple-text: #9a4dba;
+    --ev-copper:    rgba(192, 112, 56, .1);   --ev-copper-text: #c07038;
+
+    /* ------------------------------------------------------------
+       Extended chart palette.
+       Used by net-worth, cost dashboards, etc. Read by JS via
+       getComputedStyle when a non-semantic chart series is needed.
+       ------------------------------------------------------------ */
+    --chart-pink:   #b43c6e;
+    --chart-teal:   #2a8a8a;
+    --chart-grape:  #7a5c99;
+
+    /* ------------------------------------------------------------
+       Meal-category chips (FHA meal plan month view).
+       ------------------------------------------------------------ */
+    --meal-breakfast-bg: #f0e6d2; --meal-breakfast-text: #7a6530;
+    --meal-lunch-bg:     #d6e8d0; --meal-lunch-text:     #3d6634;
+    --meal-dinner-bg:    #d4dff0; --meal-dinner-text:    #34476e;
+    --meal-snack-bg:     #f0d4e8; --meal-snack-text:     #6e345f;
+
+    /* ------------------------------------------------------------
+       Typography.
+       Variable Fraunces with SOFT axis at 100 for rounder letterforms.
+       ------------------------------------------------------------ */
+    --serif-display: 'Fraunces', 'Playfair Display', Georgia, serif;
+    --serif:         'Playfair Display', Georgia, serif;
+    --sans:          'Karla', 'Segoe UI', system-ui, sans-serif;
+    --mono:          'IBM Plex Mono', monospace;
+    --ease:          cubic-bezier(.4, 0, .2, 1);
+
+    /* ------------------------------------------------------------
+       Layout.
+       ------------------------------------------------------------ */
+    --sidebar-w:  240px;
+    --topbar-h:   52px;
+
+    /* ------------------------------------------------------------
+       Radius.
+       Intimate mode biases toward --radius-lg / --radius-pill;
+       everyday mode toward --radius / --radius-sm.
+       ------------------------------------------------------------ */
+    --radius-2xs:  3px;     /* tight outlines, inline marks */
+    --radius-xs:   6px;     /* table rows, dense grids, small chips */
+    --radius-sm:  10px;     /* buttons, inputs */
+    --radius:     16px;     /* cards, panels, toasts */
+    --radius-lg:  20px;     /* modals, auth card, hero containers */
+    --radius-pill: 999px;   /* pill buttons, voice waveform */
+
+    /* ------------------------------------------------------------
+       Elevation -- warm-tinted shadows so cards rest on linen
+       instead of floating in white space.
+       ------------------------------------------------------------ */
+    --shadow-sm:     0 1px 2px rgba(61, 56, 48, .04);
+    --shadow:        0 1px 2px rgba(61, 56, 48, .04),
+                     0 6px 16px -8px rgba(61, 56, 48, .08);
+    --shadow-lg:     0 2px 4px rgba(61, 56, 48, .05),
+                     0 18px 40px -12px rgba(61, 56, 48, .14);
+    --shadow-focus:  0 0 0 3px rgba(90, 107, 90, .25);
+
+    /* Mic button (Anchor voice entry) -- sage idle/hover, danger
+       when recording. The only component with its own shadow scale. */
+    --shadow-mic:           0 2px 10px rgba(90, 107, 90, .35);
+    --shadow-mic-hover:     0 4px 16px rgba(90, 107, 90, .4);
+    --shadow-mic-recording: 0 2px 12px rgba(180, 60, 60, .45);
+
+    /* ------------------------------------------------------------
+       Spacing scale.
+       ------------------------------------------------------------ */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-8: 48px;
+
+    /* ------------------------------------------------------------
+       Surface-indirection variables.
+
+       Approved divergences (operator console sage-700 sidebar/auth)
+       are expressed by overriding these in the consumer's local
+       app.css -- not by forking the .sidebar / .auth-screen
+       components themselves. See README.md "Customising for a
+       consumer".
+
+       Defaults match family-hub-app (customer-app) behaviour so a
+       no-override consumer renders the customer-app palette.
+       ------------------------------------------------------------ */
+    --sidebar-bg:        var(--linen-shade);
+    --sidebar-fg:        var(--ink-muted);
+    --sidebar-fg-strong: var(--ink);
+    --sidebar-border:    var(--divider);
+    --auth-bg:           var(--linen-inset);
+
+    /* Bottom tab bar -- only family-hub-app renders one today. Default
+       0 so consumers without a bottom nav don't get phantom bottom
+       padding under .content on mobile. FHA's local app.css overrides
+       to 56px. */
+    --tab-bar-h: 0px;
+}
