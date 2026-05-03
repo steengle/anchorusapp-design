@@ -142,6 +142,16 @@
     <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
   </symbol>
 
+  <!-- User-plus: "share with someone" affordance. Used by Lists and
+       Notes module headers next to a Share label. Distinct from
+       icon-share (graph nodes) -- this one is identity-flavoured. -->
+  <symbol id="icon-user-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+    <circle cx="9" cy="7" r="4"/>
+    <line x1="19" y1="8" x2="19" y2="14"/>
+    <line x1="22" y1="11" x2="16" y2="11"/>
+  </symbol>
+
   <!-- Anchor-heart is the only icon rendered with the copper metallic
        gradient instead of currentColor. It is the brand-mark moment
        for the Anchor Us module. The gradient itself lives in the

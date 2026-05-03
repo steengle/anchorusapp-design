@@ -12,6 +12,47 @@ here. The package follows semver:
 Both consumers (`family-hub-app`, `anchorusapp-control`) bump together
 for any minor or major. Branching the design system is forbidden.
 
+## [1.0.1] -- 2026-05-03
+
+Patch release closing four items surfaced during the family-hub-app
+canary adoption (PR-FHA-1).
+
+### Added
+
+- `dist/sprite.svg` -- new symbol `icon-user-plus`. Used by Lists and
+  Notes module headers for the "share with someone" affordance. Was
+  added to FHA's local sprite during the deep-links work after v1.0.0
+  was cut; promoted here so all consumers have it.
+- `dist/components.css` -- new components `.modal-header-actions`
+  (right-aligned share + close pair) and `.modal-share-btn` (inline
+  share affordance in the modal header). Same provenance as the icon
+  above.
+- `dist/tokens.css` -- new surface-indirection variable
+  `--sidebar-fg-dim` (defaults to `var(--ink-dim)`). Lets consumers
+  retint the sidebar sub-label without rewriting the `.brand-sub` /
+  `.brand-family` rule. Operator console (anchorusapp-control) will
+  set this to a translucent linen for legibility on the sage-700
+  ground.
+
+### Changed
+
+- `dist/components.css` -- `.topbar` and `.content` padding changed
+  from `var(--space-5)` (24 px) to `1.25rem` (20 px). The 24 px value
+  was operator-console drift that crept into v1.0.0 during extraction;
+  the 20 px value matches family-hub-app's pre-adoption rendering and
+  is the canonical brand value.
+- `dist/components.css` -- `.sidebar-brand .brand-sub` / `.brand-family`
+  re-aligned to 10 px / .08 em / `var(--sidebar-fg-dim)` (defaults to
+  `--ink-dim`). v1.0.0 used 11 px / .04 em / `--sidebar-fg`, also
+  operator-console drift.
+
+### Migration
+
+Consumers on v1.0.0 can upgrade to v1.0.1 with `composer update
+anchorusapp/design`. No breaking changes; no consumer-side rule changes
+required. Consumers that carried local drift-compensation overrides
+matching the values above can delete those overrides after upgrading.
+
 ## [1.0.0] -- 2026-05-03
 
 Initial extraction from `family-hub-app/css/app.css`. The package is the

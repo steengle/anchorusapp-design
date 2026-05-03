@@ -184,6 +184,7 @@
     --sidebar-bg:        var(--linen-shade);
     --sidebar-fg:        var(--ink-muted);
     --sidebar-fg-strong: var(--ink);
+    --sidebar-fg-dim:    var(--ink-dim);     /* sub-label / family name */
     --sidebar-border:    var(--divider);
     --auth-bg:           var(--linen-inset);
 

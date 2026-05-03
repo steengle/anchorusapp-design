@@ -97,6 +97,7 @@ Available surface variables (defaults match `family-hub-app`):
 | `--sidebar-bg`        | `var(--linen-shade)`   | Sidebar ground                  |
 | `--sidebar-fg`        | `var(--ink-muted)`     | Sidebar text (default)          |
 | `--sidebar-fg-strong` | `var(--ink)`           | Sidebar text (active/strong)    |
+| `--sidebar-fg-dim`    | `var(--ink-dim)`       | Sidebar sub-label / family name |
 | `--sidebar-border`    | `var(--divider)`       | Sidebar right edge              |
 | `--auth-bg`           | `var(--linen-inset)`   | Auth screen ground              |
 | `--tab-bar-h`         | `0`                    | Bottom tab bar height (FHA only)|
