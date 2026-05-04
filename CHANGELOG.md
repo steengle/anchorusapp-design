@@ -12,6 +12,36 @@ here. The package follows semver:
 Both consumers (`family-hub-app`, `anchorusapp-control`) bump together
 for any minor or major. Branching the design system is forbidden.
 
+## [1.0.3] -- 2026-05-04
+
+Minor release adding the Help Center component family.
+
+### Added
+
+- `dist/components.css` -- Help Center drawer + triggers. Selectors:
+  `.help-scrim`, `.help-panel`, `.help-panel-header`, `.help-back`,
+  `.help-close`, `.help-category`, `.help-title`, `.help-body` (with
+  prose typography for `h1`/`h2`/`h3`/`p`/`ul`/`ol`/`li`/`a`/`code`/
+  `img`), `.help-empty`, `.help-topbar-btn` (route-aware `?` button),
+  `.help-trigger-btn` (inline `?` icon next to a form label or modal
+  title), plus the two media queries (`max-width: 600px` for full-
+  width mobile drawer; `prefers-reduced-motion` to drop the slide +
+  fade).
+
+  Promoted from family-hub-app's local `css/app.css`. Both consumers
+  now ship the same Help Center -- `anchorusapp-control` (operator
+  console) gains it for operator runbooks; `family-hub-app` (customer
+  app) drops the duplicate from its local CSS. Each consumer brings
+  its own JS module + corpus + endpoint; the CSS is the only shared
+  surface.
+
+### Migration
+
+Consumers on v1.0.2 can upgrade to v1.0.3 with `composer update
+engle/design-system` (or `anchorusapp/design`). No breaking changes.
+Consumers carrying local copies of any `.help-*` selectors can delete
+those after upgrading.
+
 ## [1.0.2] -- 2026-05-03
 
 Patch release fixing one issue surfaced minutes after v1.0.1 published.
