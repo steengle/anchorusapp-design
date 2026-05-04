@@ -17,6 +17,17 @@
 
 
 /* =================================================================
+   Bottom tab bar -- consumer-rendered <nav class="bottom-tabs"> with
+   <a class="tab-item">/<button class="tab-item"> children carrying
+   .tab-icon + .tab-label. Hidden by default; activated on the 768px
+   breakpoint below. Consumers set --tab-bar-h on :root to opt in
+   (the .content padding-bottom and .install-banner offset rules
+   below already read --tab-bar-h, defaulting to 0px).
+   ================================================================= */
+.bottom-tabs { display: none; }
+
+
+/* =================================================================
    <= 768px: tablet boundary -- shell collapses
    ================================================================= */
 @media (max-width: 768px) {
@@ -92,6 +103,48 @@
     .install-banner-body { gap: .6rem; }
     .install-banner-icon { width: 36px; height: 36px; }
     .install-banner-title { font-size: .9rem; }
+
+    /* Bottom tab bar activates on the tablet boundary. Fixed to the
+       viewport bottom, sized by --tab-bar-h, with iOS safe-area
+       padding so the home indicator doesn't overlap the row. */
+    .bottom-tabs {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: var(--tab-bar-h);
+        background: var(--paper);
+        border-top: 0.5px solid var(--divider);
+        z-index: 150;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 .25rem;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .tab-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        gap: .15rem;
+        padding: .35rem 0;
+        color: var(--ink-muted);
+        font-size: .6rem;
+        text-decoration: none;
+        transition: color .12s var(--ease);
+        cursor: pointer;
+        background: none;
+        border: none;
+        font-family: inherit;
+    }
+    .tab-item:hover { color: var(--ink); }
+    .tab-item.active { color: var(--sage-500); }
+    .tab-icon { width: 22px; height: 22px; flex-shrink: 0; }
+    .tab-item.active .tab-icon { opacity: 1; }
+    .tab-label { letter-spacing: .02em; }
 }
 
 

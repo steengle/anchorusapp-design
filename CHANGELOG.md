@@ -12,6 +12,40 @@ here. The package follows semver:
 Both consumers (`family-hub-app`, `anchorusapp-control`) bump together
 for any minor or major. Branching the design system is forbidden.
 
+## [1.0.4] -- 2026-05-04
+
+Minor release promoting the bottom tab bar to the package.
+
+### Added
+
+- `dist/responsive.css` -- `.bottom-tabs` (and its children
+  `.tab-item`, `.tab-icon`, `.tab-label`). Hidden by default; activates
+  inside the existing `@media (max-width: 768px)` block as a fixed bar
+  at the viewport bottom, sized by `--tab-bar-h`, with iOS
+  `env(safe-area-inset-bottom)` padding for the home indicator.
+
+  Consumers opt in by setting `--tab-bar-h` on `:root` (e.g. `56px`)
+  and rendering a `<nav class="bottom-tabs">` with `.tab-item` children
+  in their shell HTML. The existing `.content` `padding-bottom` and
+  `.install-banner` offset rules already read `--tab-bar-h` and default
+  to `0px` for consumers that don't opt in.
+
+  Promoted from family-hub-app's local `css/app.css`, where the
+  selectors lived as a "shippable in two repos" duplicate. Both
+  consumers now share a single source of truth -- `anchorusapp-control`
+  (operator console) had stub markup with the comment "DS responsive.css
+  unhides .bottom-tabs below 768px" that wasn't actually true; this
+  release makes the comment accurate.
+
+### Migration
+
+Consumers on v1.0.3 can upgrade to v1.0.4 with `composer update
+anchorusapp/design` -- no markup change required for consumers that
+already render `.bottom-tabs`. Consumers that previously kept the
+selectors in their local CSS should remove them in the same PR that
+bumps the dep, to avoid duplicate-rule cascade ambiguity.
+
+
 ## [1.0.3] -- 2026-05-04
 
 Minor release adding the Help Center component family.
