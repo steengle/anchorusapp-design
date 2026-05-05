@@ -12,6 +12,39 @@ here. The package follows semver:
 Both consumers (`family-hub-app`, `anchorusapp-control`) bump together
 for any minor or major. Branching the design system is forbidden.
 
+## [1.0.5] -- 2026-05-04
+
+Minor release promoting the conversation-thread message bubbles to the
+package.
+
+### Added
+
+- `dist/components.css` -- `.msg-row` (with `.msg-bubble-self` modifier
+  flipping `flex-direction` to `row-reverse`), `.msg-bubble` (with
+  `.msg-bubble-self` modifier swapping the paper background for
+  `--sage-100`), `.msg-meta`, `.msg-when`, `.msg-body`.
+
+  Pairs with the existing `.avatar-sm` chrome for chat-style threads.
+  The `.msg-bubble-self` modifier is applied to both the row and the
+  bubble; on the row it flips avatar position to the right, on the
+  bubble it picks up the sage tint that reads as "this is us".
+
+  Promoted from family-hub-app's local `css/app.css` (where the
+  selectors had been the canonical chrome for feedback-triage and
+  support threads) and anchorusapp-control's local `css/app.css`
+  (where they were ported verbatim in CP PR #91 to bring the operator
+  /support thread into parity). Both consumers now share a single
+  source of truth.
+
+### Migration
+
+Consumers on v1.0.4 can upgrade to v1.0.5 with `composer update
+anchorusapp/design`. No markup change required for consumers that
+already render `.msg-row` / `.msg-bubble`. Consumers that previously
+kept the selectors in their local CSS should remove them in the same
+PR that bumps the dep, to avoid duplicate-rule cascade ambiguity.
+
+
 ## [1.0.4] -- 2026-05-04
 
 Minor release promoting the bottom tab bar to the package.
